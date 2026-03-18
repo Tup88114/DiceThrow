@@ -17,12 +17,17 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.fragmentContainerView, DieFragment.newInstance(20))
+                .add(R.id.fragmentContainerView4, DieFragment.newInstance(20))
                 .commit()
         }
 
         findViewById<Button>(R.id.rollDiceButton).setOnClickListener {
             supportFragmentManager
                 .findFragmentById(R.id.fragmentContainerView)?.run {
+                    (this as DieFragment).throwDie()
+                }
+            supportFragmentManager
+                .findFragmentById(R.id.fragmentContainerView4)?.run {
                     (this as DieFragment).throwDie()
                 }
         }
