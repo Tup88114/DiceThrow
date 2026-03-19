@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,18 +14,36 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+//        if (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) == null) {
+//            supportFragmentManager
+//                .beginTransaction()
+//                .add(R.id.fragmentContainerView, DieFragment.newInstance(20))
+//                .commit()
+//        }
+//
+//        findViewById<Button>(R.id.rollDiceButton).setOnClickListener {
+//            supportFragmentManager
+//                .findFragmentById(R.id.fragmentContainerView)?.run {
+//                    (this as DieFragment).throwDie()
+//                }
+//        }
+
+        val viewModel = ViewModelProvider(this)[DieViewModel::class.java]
+
         if (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragmentContainerView, DieFragment.newInstance(20))
+                .add(R.id.fragmentContainerView, DieFragment())
                 .commit()
+        }
+        //Set the amount of sides
+        if (savedInstanceState == null) {
+            viewModel.setSides(6)
+            viewModel.throwDie()
         }
 
         findViewById<Button>(R.id.rollDiceButton).setOnClickListener {
-            supportFragmentManager
-                .findFragmentById(R.id.fragmentContainerView)?.run {
-                    (this as DieFragment).throwDie()
-                }
+            viewModel.throwDie()
         }
     }
 }

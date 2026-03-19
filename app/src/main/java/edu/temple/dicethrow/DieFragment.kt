@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import kotlin.random.Random
 
 class DieFragment : Fragment() {
@@ -15,21 +16,24 @@ class DieFragment : Fragment() {
 
     lateinit var dieTextView: TextView
 
+    private lateinit var viewModel: DieViewModel
+
     var currentRoll = 1
 
     var dieSides: Int = 6
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            it.getInt(DIESIDE).run {
-                dieSides = this
-            }
-        }
-
-        savedInstanceState?.run {
-            currentRoll = getInt(ROLL_KEY)
-        }
+//        arguments?.let {
+//            it.getInt(DIESIDE).run {
+//                dieSides = this
+//            }
+//        }
+//
+//        savedInstanceState?.run {
+//            currentRoll = getInt(ROLL_KEY)
+//        }
+        viewModel = ViewModelProvider(requireActivity())[DieViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -41,34 +45,41 @@ class DieFragment : Fragment() {
             dieTextView = findViewById(R.id.dieTextView)
         }
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (currentRoll == 0) {
-            throwDie()
-        }
-        else {
-            dieTextView.text = currentRoll.toString()
+        viewModel.currentRoll.observe(viewLifecycleOwner) {
+            dieTextView.text = it.toString()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        if (currentRoll == 0) {
+//            throwDie()
+//        }
+//        else {
+//            dieTextView.text = currentRoll.toString()
+//        }
+//    }
 
-        outState.putInt(ROLL_KEY, currentRoll)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//
+//        outState.putInt(ROLL_KEY, currentRoll)
+//    }
 
-    fun throwDie() {
-        currentRoll = Random.nextInt(1,dieSides + 1)
-        dieTextView.text = currentRoll.toString()
-    }
-
-    companion object {
-        fun newInstance(sides: Int) = DieFragment().apply {
-            arguments = Bundle().apply {
-                putInt(DIESIDE, sides)
-            }
-        }
-    }
+//    fun throwDie() {
+//        currentRoll = Random.nextInt(1,dieSides + 1)
+//        dieTextView.text = currentRoll.toString()
+//    }
+//
+//    companion object {
+//        fun newInstance(sides: Int) = DieFragment().apply {
+//            arguments = Bundle().apply {
+//                putInt(DIESIDE, sides)
+//            }
+//        }
+//    }
 }
